@@ -1,12 +1,21 @@
 {
-  "name": "begin-app",
-  "description": "Begin Create React App + API",
-  "version": "0.0.0",
-  "proxy": "http://localhost:3333",
+  "name": "stephen_ronald_bell",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "react-scripts": "^4.0.3"
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.11.1",
+    "react-scripts": "5.0.1",
+    "scrape-youtube": "^2.4.0",
+    "stream": "^0.0.2",
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "run-p start:react api",
@@ -19,7 +28,10 @@
     "serve": "run-s build api"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -32,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.2"
   }
 }
