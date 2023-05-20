@@ -1,63 +1,33 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-
+const puppeteer = require('puppeteer');
+const ytdl = require('ytdl-core');
+const { YoutubeTranscript } = require('youtube-transcript')
 const app = express();
+var cors = require('cors')
 app.use(bodyParser.json());
+app.use(cors())
 
 let users = [
     { id: 1, name: 'John Doe', email: 'john@example.com' },
     { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
 ];
 
+
 // Get all users
-app.get('/users', (req, res) => {
-    res.json(users);
-});
-
-// Get a single user
-app.get('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const user = users.find(user => user.id === userId);
-
-    if (user) {
-        res.json(user);
-    } else {
-        res.status(404).json({ error: 'User not found' });
+app.post('/get-youtube-text', async (req, res) => {
+    try {
+        const video = req.body.video
+        let allStr = ''
+        await YoutubeTranscript.fetchTranscript(video)
+            .then((data) => data && data.length > 0 && data.map((str) => allStr = allStr + `\n ${str.text}`))
+            .catch((err) => console.log(err)
+            );
+        const infoDetail = await ytdl.getInfo(`https://www.youtube.com/watch?v=${video}`)
+        res.send({ text: allStr, info: infoDetail.videoDetails })
     }
-});
-
-// Create a new user
-app.post('/users', (req, res) => {
-    const newUser = req.body;
-    users.push(newUser);
-    res.status(201).json(newUser);
-});
-
-// Update a user
-app.put('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const updatedUser = req.body;
-    const index = users.findIndex(user => user.id === userId);
-
-    if (index !== -1) {
-        users[index] = { ...users[index], ...updatedUser };
-        res.json(users[index]);
-    } else {
-        res.status(404).json({ error: 'User not found' });
-    }
-});
-
-// Delete a user
-app.delete('/users/:id', (req, res) => {
-    const userId = parseInt(req.params.id);
-    const index = users.findIndex(user => user.id === userId);
-
-    if (index !== -1) {
-        const deletedUser = users[index];
-        users.splice(index, 1);
-        res.json(deletedUser);
-    } else {
-        res.status(404).json({ error: 'User not found' });
+    catch (error) {
+        res.status(400).json({ message: error.message })
     }
 });
 
